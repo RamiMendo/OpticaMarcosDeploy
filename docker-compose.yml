@@ -1,0 +1,29 @@
+version: '4'
+
+services:
+  centro_optico_marcos_web:
+    build: CentroOpticoMarcos
+    mem_limit: 512m
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: jdbc:mysql://optica_mark:3306/opticamarcos?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER_NAME: root
+      DB_PASSWORD: Rami@McGregor00
+    restart: always
+    depends_on:
+      optica_mark:
+          condition: service_healthy
+  optica_mark:
+    image: mysql:8.0.33 
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Rami@McGregor00
+      MYSQL_PASSWORD: Rami@McGregor00
+      MYSQL_DATABASE: opticamarcos
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
